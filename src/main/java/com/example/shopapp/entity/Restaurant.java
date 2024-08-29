@@ -23,11 +23,8 @@ public class Restaurant {
     @OneToOne
     private Address address;
     @OneToOne
-    private UserEntity user;
+    private UserEntity owner;
 
-    private String email;
-    private String mobile;
-    private String twitter;
     private String description;
     private String name;
     private String cuisineType;

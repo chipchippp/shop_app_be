@@ -22,6 +22,7 @@ public class UserEntity {
     private String username;
     private String email;
     private String password;
+
     private ERole role = ERole.ROLE_USER;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
