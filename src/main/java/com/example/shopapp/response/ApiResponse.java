@@ -1,18 +1,17 @@
 package com.example.shopapp.response;
 
-import com.example.shopapp.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
-@Data
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryResponse {
-    private Long id;
-    private String name;
+public class ApiResponse<T> {
+    private int status;
+    private String message;
+    private T data;
 }

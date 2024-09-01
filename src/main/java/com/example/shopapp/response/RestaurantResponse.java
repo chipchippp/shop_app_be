@@ -1,9 +1,6 @@
 package com.example.shopapp.response;
 
-import com.example.shopapp.entity.Address;
-import com.example.shopapp.entity.ContactInformation;
-import com.example.shopapp.entity.Restaurant;
-import com.example.shopapp.entity.UserEntity;
+import com.example.shopapp.entity.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -21,7 +18,7 @@ public class RestaurantResponse {
 
     private Address address;
     private UserEntity owner;
-
+    private List<Category> categories;
     private String description;
 
     @JsonProperty("cuisine_type")
@@ -31,7 +28,7 @@ public class RestaurantResponse {
     private String openingHours;
 
     @JsonProperty("images")
-    private List<String> images;
+    private String images;
 
     @JsonProperty("order_id")
     private Long order;

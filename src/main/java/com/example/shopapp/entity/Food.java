@@ -30,6 +30,7 @@ public class Food {
 
     @ManyToOne
     private Restaurant restaurant;
+    private Long quantity;
     private boolean available;
     private boolean isSeasonal;
     private boolean isVegan;

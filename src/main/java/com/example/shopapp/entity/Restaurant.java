@@ -3,18 +3,19 @@ package com.example.shopapp.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "restaurant")
 public class Restaurant {
     @Id
@@ -30,13 +31,16 @@ public class Restaurant {
     private String cuisineType;
     private String openingHours;
 
-    @ElementCollection
-    @Column(length = 1000)
-    private List<String> images;
+    @Column(length = 300)
+    private String images;
 
     @JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    @ManyToOne()
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)

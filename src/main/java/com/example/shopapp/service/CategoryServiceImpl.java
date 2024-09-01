@@ -1,60 +1,62 @@
 package com.example.shopapp.service;
 
+import com.example.shopapp.dto.CategoryDTO;
 import com.example.shopapp.entity.Category;
-import com.example.shopapp.entity.Restaurant;
-import com.example.shopapp.response.CategoryResponse;
+import com.example.shopapp.mapper.CategoryMapper;
 import com.example.shopapp.respository.CategoryRepository;
 import com.example.shopapp.service.impl.CategoryService;
 import com.example.shopapp.service.impl.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
-    private final RestaurantService restaurantService;
-
 
     @Override
-    public Page<CategoryResponse> getAllCategories(PageRequest pageRequest) throws Exception {
-        return categoryRepository.findAll(pageRequest).map(CategoryResponse::fromCategory);
+    public Page<CategoryDTO> getAllCategories(Pageable pageable){
+        Page<Category> categories = categoryRepository.findAll(pageable);
+        return categories.map(CategoryMapper.INSTANCE::toCategoryDTO);
+    }
+
+    public Category findCategoryById(Long id)  {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isEmpty()){
+            throw new RuntimeException("Category not found");
+        }
+        return category.get();
     }
 
     @Override
-    public List<Category> findCategoryByResId(Long id) throws Exception {
-        Restaurant restaurant = restaurantService.findRestaurantById(id);
-        return categoryRepository.findByRestaurantId(id);
+    public CategoryDTO saveCategory(CategoryDTO categoryDTO)  {
+        if (categoryRepository.existsByCategoryName(categoryDTO.getName())){
+            throw new RuntimeException("Category already exists with name: " + categoryDTO.getName());
+        }
+        Category category = CategoryMapper.INSTANCE.categoryDTOToCategory(categoryDTO);
+        categoryRepository.save(category);
+        return categoryDTO;
+
     }
 
     @Override
-    public Category findCategoryById(Long id) throws Exception {
-        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+    public void updateCategory(Long id, CategoryDTO categoryDTO)  {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        if (categoryRepository.existsByCategoryName(categoryDTO.getName()) && !categoryDTO.getName().equals(category.getName())) {
+            throw new RuntimeException("Category already exists with name: " + categoryDTO.getName());
+        }
+        category.setName(categoryDTO.getName());
+        categoryRepository.save(category);
     }
 
     @Override
-    public Category saveCategory(String category, Long userId) throws Exception {
-        Restaurant restaurant = restaurantService.getRestaurantByUserId(userId);
-        Category newCategory = new Category();
-        newCategory.setName(category);
-        newCategory.setRestaurant(restaurant);
-        return categoryRepository.save(newCategory);
-    }
-
-    @Override
-    public void deleteCategory(Long id) throws Exception {
+    public void deleteCategory(Long id)  {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
         categoryRepository.delete(category);
-    }
-
-    @Override
-    public void updateCategory(Long id, String category) throws Exception {
-        Category existingCategory = findCategoryById(id);
-        existingCategory.setName(category);
-        categoryRepository.save(existingCategory);
     }
 }

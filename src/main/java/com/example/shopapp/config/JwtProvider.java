@@ -1,5 +1,6 @@
 package com.example.shopapp.config;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
@@ -26,15 +27,15 @@ public class JwtProvider {
         return jwt;
     }
 
-    public String getEmailFromJwtToken(String jwt){
+    public String getEmailFromJwtToken(String jwt) {
         jwt = jwt.substring(7);
 
-        String email = Jwts.parserBuilder()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(jwt)
-                .getBody()
-                .getSubject();
+                .getBody();
+        String email = String.valueOf(claims.get("email"));
         return email;
     }
 

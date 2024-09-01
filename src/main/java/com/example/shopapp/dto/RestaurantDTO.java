@@ -1,15 +1,21 @@
 package com.example.shopapp.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import com.example.shopapp.entity.Address;
+import com.example.shopapp.entity.ContactInformation;
+import com.example.shopapp.entity.Food;
 import lombok.Data;
 
 @Data
-@Embeddable
 public class RestaurantDTO {
     private Long id;
-    private String title;
-    @Column(length = 1000)
+    private String name;
+    private String cuisineType;
+    private String openingHours;
     private String images;
+    private Long categoryId;
+    private Long ownerId;
+    private Food food;
+    private ContactInformation contactInformation;
+    private Address address;
     private String description;
 }
